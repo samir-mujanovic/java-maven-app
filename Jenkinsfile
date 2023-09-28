@@ -1,38 +1,29 @@
-def gv
-
 pipeline {
     agent any
-    tools {
-        maven 'Maven'
-    }
     stages {
-        stage("init") {
+        stage('test') {
             steps {
                 script {
-                    gv = load "script.groovy"
+                    echo "Testing the application..."
                 }
             }
         }
-        stage("build jar") {
+        stage('build') {
             steps {
                 script {
-                    gv.buildJar()
+                    echo "Building the application..."
                 }
             }
         }
-        stage("build image") {
+        stage('deploy') {
             steps {
                 script {
-                    gv.buildImage()
+                    def dockerCmd = 'docker run -p 3080:3080 -d xhawk1337/demo-app:1.0'
+                    sshagent(['aws-key']) {
+                        sh "ssh -o StrictHostKeyChecking=no ec2-user@3.127.218.231 ${dockerCmd}"
+                    }
                 }
             }
         }
-        stage("deploy") {
-            steps {
-                script {
-                    gv.deployApp()
-                }
-            }
-        }
-    }   
+    }
 }
