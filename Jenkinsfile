@@ -17,5 +17,15 @@ pipeline {
                git branch: 'main', url: 'https://github.com/samir-mujanovic/java-maven-app' 
             }
         }
+        stage("Build Application") {
+            steps {
+               sh "mvn clean package"
+            }
+        }
+        stage("Test Application") {
+            steps {
+               sh "mvn test"
+            }
+        }
     }   
 }
