@@ -1,37 +1,20 @@
-def gv
-
 pipeline {
-    agent any
+    agent {
+        label "jenkins-agent"
+    }
     tools {
-        maven 'Maven'
+        jdk 'Java17'
+        maven 'maven-3.9'
     }
     stages {
-        stage("init") {
+        stage("Cleanup Workspace") {
             steps {
-                script {
-                    gv = load "script.groovy"
-                }
+                cleanWs()
             }
         }
-        stage("build jar") {
+        stage("Checkout from SCM") {
             steps {
-                script {
-                    gv.buildJar()
-                }
-            }
-        }
-        stage("build image") {
-            steps {
-                script {
-                    gv.buildImage()
-                }
-            }
-        }
-        stage("deploy") {
-            steps {
-                script {
-                    gv.deployApp()
-                }
+               git branch: 'main', url: 'https://github.com/samir-mujanovic/java-maven-app' 
             }
         }
     }   
